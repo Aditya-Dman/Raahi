@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:geolocator/geolocator.dart';
+import '../config/api_config.dart';
 
 class PlacesService {
-  // Google Places API key - Using a working key for testing
-  static const String _apiKey = 'AIzaSyBdKg2rEJ8S4YjMJxOGVP3yB1KL4X8F9mN';
+  // Google Places API key - loaded securely from configuration
+  static String get _apiKey => ApiConfig.getGoogleApiKey();
   static const String _baseUrl = 'https://maps.googleapis.com/maps/api/place';
 
   // Get current location  // Get current location

@@ -23,17 +23,19 @@ Your app now uses **real Google Places API** to find nearby restaurants, hotels,
 
 ## 🗝️ API Key Configuration
 
-The app is configured to use Google Places API with the key:
-`AIzaSyBOti4mM-6x9WDnZIjIeyb041Nl16ovNod`
-
-**Location in code:** `lib/services/places_service.dart` line 7
-
-### To Use Your Own API Key:
+### To Configure Your API Key:
 1. Go to [Google Cloud Console](https://console.cloud.google.com/)
 2. Create a new project or select existing one
-3. Enable **Places API** and **Maps SDK**
+3. Enable **Places API** and **Maps SDK for Android**
 4. Create an API key with Places API access
-5. Replace the key in `places_service.dart`
+5. Update the following locations:
+   - `android/app/src/main/AndroidManifest.xml` - Replace `YOUR_GOOGLE_API_KEY_HERE`
+   - Set environment variable `GOOGLE_API_KEY` or update `lib/config/api_config.dart`
+
+### Security Best Practices:
+- **Never commit API keys** to public repositories
+- **Restrict your API key** to specific APIs and Android package name
+- **Monitor usage** in Google Cloud Console
 
 ## 🌍 Real Data Features
 

@@ -105,10 +105,23 @@ flutter pub get
 
 ### 3. API Configuration
 
-#### API Configuration
-This app integrates with Google Maps API and Supabase for backend services. Configuration files are located in:
-- `lib/services/places_service.dart` - Google Places API
-- `lib/services/supabase_config.dart` - Supabase configuration
+#### Google Maps & Places API Setup
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project or select existing one
+3. Enable **Maps SDK for Android** and **Places API**
+4. Create an API key with proper restrictions
+5. Update `android/app/src/main/AndroidManifest.xml`:
+   ```xml
+   <meta-data android:name="com.google.android.geo.API_KEY"
+              android:value="YOUR_ACTUAL_API_KEY_HERE"/>
+   ```
+6. Set environment variable or update `lib/config/api_config.dart`
+
+#### Supabase Setup
+1. Create a project at [Supabase](https://supabase.com)
+2. Update `lib/services/supabase_config.dart` with your project details
+
+**⚠️ Security Note:** Never commit API keys to public repositories!
 
 ### 4. Database Setup
 Run the SQL scripts in the Supabase SQL editor:
