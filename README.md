@@ -9,7 +9,7 @@
 **🏆 Developed for Smart India Hackathon (SIH) 2025 Problem Statement**
 
 [![Flutter](https://img.shields.io/badge/Flutter-3.8.1+-02569B?style=flat&logo=flutter)](https://flutter.dev)
-[![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20iOS%20%7C%20Web%20%7C%20Desktop-blue)](#)
+[![Platform](https://img.shields.io/badge/Platform-Android-blue)](#)
 [![SIH](https://img.shields.io/badge/SIH-2025-orange?style=flat)](https://sih.gov.in)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](#)
 
@@ -42,7 +42,7 @@
 - Secure user authentication with Supabase
 - Digital ID management and KYC updates
 - Blockchain-based security features
-- Multi-language support (English/Hindi)
+- Two-language support (English/Hindi)
 
 ### 🗺️ **Location & Navigation**
 - Real-time GPS tracking and location services
@@ -52,7 +52,7 @@
 - Smart location-based alerts
 
 ### 🚨 **Emergency Features**
-- One-tap emergency alert system
+- 3sec Hold emergency alert system
 - Emergency contacts management
 - Real-time health monitoring
 - AI-powered anomaly detection
@@ -65,15 +65,10 @@
 - Price level indicators and opening hours
 
 ### 🤖 **AI-Powered Features**
-- Intelligent chatbot integration (Chatbase)
+- Intelligent chatbot integration (Raahi)
 - Behavior tracking and analysis
 - Predictive safety alerts
 - Smart recommendations
-
-### 🔊 **Alerts & Notifications**
-- Audio alerts with custom sound effects
-- Push notifications for safety updates
-- Multi-channel emergency communication
 
 ## 🛠️ Tech Stack
 
@@ -81,7 +76,6 @@
 - **Backend**: Supabase (PostgreSQL, Authentication, Real-time)
 - **Maps**: Google Maps API, Google Places API
 - **Location**: Geolocator, Location Services
-- **Audio**: AudioPlayers for emergency sounds
 - **State Management**: Provider
 - **Image Handling**: Image Picker
 - **Web Integration**: WebView Flutter
@@ -160,14 +154,9 @@ lib/
 - `CHATBASE_INTEGRATION.md` - AI chatbot setup
 - `REAL_DATA_SETUP.md` - Real data configuration
 
-## 🌍 Supported Platforms
+## 🌍 Supported Platform
 
 - ✅ Android
-- ✅ iOS  
-- ✅ Web
-- ✅ Windows
-- ✅ macOS
-- ✅ Linux
 
 ## 📱 Key Screens
 
@@ -191,10 +180,6 @@ lib/
 
 This project was developed as a solution for **Smart India Hackathon 2025**, addressing the critical need for tourist safety and security in India. The app provides comprehensive safety features for tourists, including emergency alerts, real-time tracking, and AI-powered assistance to ensure safe and secure tourism experiences.
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## 👨‍💻 Developer
 
 **Aditya Dman**
@@ -207,7 +192,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Supabase for backend infrastructure
 - Google for Maps and Places APIs
 
-## 📞 Support
 
 If you found this project helpful, please give it a ⭐️!
 
