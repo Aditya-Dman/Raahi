@@ -1,0 +1,207 @@
+{
+  "@@locale": "en",
+  "appTitle": "Raahi - Smart Tourist Safety System",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  "appName": "Raahi",
+  "@appName": {
+    "description": "The name of the application"
+  },
+  "appTagline": "Smart Tourist Safety System",
+  "@appTagline": {
+    "description": "The tagline of the application"
+  },
+  "loading": "Loading...",
+  "@loading": {
+    "description": "Loading text"
+  },
+  "welcome": "Welcome to Raahi",
+  "@welcome": {
+    "description": "Welcome message"
+  },
+  "getStarted": "Get Started",
+  "@getStarted": {
+    "description": "Get started button"
+  },
+  "loginTitle": "Welcome Back",
+  "@loginTitle": {
+    "description": "Login page title"
+  },
+  "loginSubtitle": "Sign in to your account",
+  "@loginSubtitle": {
+    "description": "Login page subtitle"
+  },
+  "email": "Email",
+  "@email": {
+    "description": "Email field label"
+  },
+  "password": "Password",
+  "@password": {
+    "description": "Password field label"
+  },
+  "signIn": "Sign In",
+  "@signIn": {
+    "description": "Sign in button"
+  },
+  "signUp": "Sign Up",
+  "@signUp": {
+    "description": "Sign up button"
+  },
+  "createAccount": "Create New Account",
+  "@createAccount": {
+    "description": "Create account button"
+  },
+  "fullName": "Full Name",
+  "@fullName": {
+    "description": "Full name field label"
+  },
+  "nationality": "Nationality",
+  "@nationality": {
+    "description": "Nationality field label"
+  },
+  "userType": "User Type",
+  "@userType": {
+    "description": "User type field label"
+  },
+  "tourist": "Tourist",
+  "@tourist": {
+    "description": "Tourist user type"
+  },
+  "localGuide": "Local Guide",
+  "@localGuide": {
+    "description": "Local guide user type"
+  },
+  "emergencyContact": "Emergency Contact",
+  "@emergencyContact": {
+    "description": "Emergency contact"
+  },
+  "dashboard": "Dashboard",
+  "@dashboard": {
+    "description": "Dashboard title"
+  },
+  "profile": "Profile",
+  "@profile": {
+    "description": "Profile"
+  },
+  "settings": "Settings",
+  "@settings": {
+    "description": "Settings"
+  },
+  "language": "Language",
+  "@language": {
+    "description": "Language setting"
+  },
+  "selectLanguage": "Select Language",
+  "@selectLanguage": {
+    "description": "Select language option"
+  },
+  "english": "English",
+  "@english": {
+    "description": "English language"
+  },
+  "hindi": "Hindi",
+  "@hindi": {
+    "description": "Hindi language"
+  },
+  "save": "Save",
+  "@save": {
+    "description": "Save button"
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel button"
+  },
+  "logout": "Logout",
+  "@logout": {
+    "description": "Logout button"
+  },
+  "confirm": "Confirm",
+  "@confirm": {
+    "description": "Confirm button"
+  },
+  "emergencyAlert": "Emergency Alert",
+  "@emergencyAlert": {
+    "description": "Emergency alert"
+  },
+  "sendAlert": "Send Alert",
+  "@sendAlert": {
+    "description": "Send alert button"
+  },
+  "digitalId": "Digital ID",
+  "@digitalId": {
+    "description": "Digital ID"
+  },
+  "updateKyc": "Update KYC",
+  "@updateKyc": {
+    "description": "Update KYC"
+  },
+  "places": "Places",
+  "@places": {
+    "description": "Places"
+  },
+  "nearbyPlaces": "Nearby Places",
+  "@nearbyPlaces": {
+    "description": "Nearby places"
+  },
+  "safetyFeatures": "Safety Features",
+  "@safetyFeatures": {
+    "description": "Safety features"
+  },
+  "quickAccess": "Quick Access",
+  "@quickAccess": {
+    "description": "Quick access"
+  },
+  "emergencyServices": "Emergency Services",
+  "@emergencyServices": {
+    "description": "Emergency services"
+  },
+  "realTimeSafety": "Real-time Safety",
+  "@realTimeSafety": {
+    "description": "Real-time safety"
+  },
+  "secureIdentity": "Secure Identity",
+  "@secureIdentity": {
+    "description": "Secure identity"
+  },
+  "multiLanguageSupport": "Multi-language Support",
+  "@multiLanguageSupport": {
+    "description": "Multi-language support"
+  },
+  "overview": "Overview",
+  "@overview": {
+    "description": "Overview page title"
+  },
+  "gps": "GPS",
+  "@gps": {
+    "description": "GPS navigation"
+  },
+  "safetyEmergency": "Safety Emergency",
+  "@safetyEmergency": {
+    "description": "Safety Emergency section"
+  },
+  "aiAssistant": "AI Assistant",
+  "@aiAssistant": {
+    "description": "AI Assistant"
+  },
+  "iot": "IoT",
+  "@iot": {
+    "description": "Internet of Things"
+  },
+  "id": "ID",
+  "@id": {
+    "description": "Digital ID"
+  },
+  "phonePermissionNeeded": "Phone permission is needed for emergency calling features",
+  "@phonePermissionNeeded": {
+    "description": "Phone permission required message"
+  },
+  "smsPermissionNeeded": "SMS permission is needed for automatic emergency alerts",
+  "@smsPermissionNeeded": {
+    "description": "SMS permission required message"
+  },
+  "locationPermissionNeeded": "Location permission is needed for GPS tracking and maps",
+  "@locationPermissionNeeded": {
+    "description": "Location permission required message"
+  }
+}

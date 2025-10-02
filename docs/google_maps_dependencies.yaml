@@ -1,0 +1,96 @@
+# Google Maps Integration Dependencies for Tourist Safety App
+
+# Add these dependencies to your pubspec.yaml for full Google Maps functionality:
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # Current dependencies (keep existing ones)
+  cupertino_icons: ^1.0.2
+  
+  # Map and Location Services
+  google_maps_flutter: ^2.5.0        # Google Maps integration
+  geolocator: ^10.1.0                # GPS location services
+  geocoding: ^2.1.1                  # Address to coordinates conversion
+  location: ^5.0.3                   # Location permissions and services
+  
+  # Network and API Integration
+  http: ^1.1.0                       # HTTP requests for APIs
+  dio: ^5.3.2                        # Advanced HTTP client
+  
+  # State Management
+  provider: ^6.1.1                   # State management
+  bloc: ^8.1.2                       # BLoC pattern for complex state
+  
+  # Local Storage
+  shared_preferences: ^2.2.2         # Simple key-value storage
+  sqflite: ^2.3.0                    # Local database
+  
+  # Real-time Communication
+  socket_io_client: ^2.0.3           # WebSocket for real-time updates
+  firebase_messaging: ^14.7.0        # Push notifications
+  
+  # Emergency and Safety Features
+  url_launcher: ^6.2.1               # Launch phone calls, SMS, URLs
+  permission_handler: ^11.1.0        # Handle device permissions
+  device_info_plus: ^9.1.1           # Device information
+  
+  # UI and Animation
+  lottie: ^2.7.0                     # Animations
+  cached_network_image: ^3.3.0       # Image caching
+  shimmer: ^3.0.0                    # Loading animations
+  
+  # Utilities
+  intl: ^0.18.1                      # Internationalization
+  timeago: ^3.5.0                    # Time formatting
+  uuid: ^4.2.2                       # Generate unique IDs
+  
+  # Security and Encryption
+  crypto: ^3.0.3                     # Encryption utilities
+  local_auth: ^2.1.7                 # Biometric authentication
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+# Platform-specific configuration needed:
+
+# For Android (android/app/build.gradle):
+# Add to android/app/src/main/AndroidManifest.xml:
+# <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+# <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+# <uses-permission android:name="android.permission.INTERNET" />
+# <uses-permission android:name="android.permission.CALL_PHONE" />
+# <uses-permission android:name="android.permission.SEND_SMS" />
+
+# Add to android/app/src/main/AndroidManifest.xml in <application>:
+# <meta-data android:name="com.google.android.geo.API_KEY"
+#            android:value="YOUR_GOOGLE_MAPS_API_KEY"/>
+
+# For iOS (ios/Runner/Info.plist):
+# <key>NSLocationWhenInUseUsageDescription</key>
+# <string>This app needs location access for safety tracking</string>
+# <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+# <string>This app needs location access for emergency services</string>
+
+# Environment Variables (.env file):
+# GOOGLE_MAPS_API_KEY=your_google_maps_api_key_here
+# TOURISM_API_KEY=your_tourism_api_key_here
+# EMERGENCY_API_ENDPOINT=your_emergency_service_endpoint
+
+# Google Cloud Console Setup Required:
+# 1. Enable Google Maps SDK for Android
+# 2. Enable Google Maps SDK for iOS  
+# 3. Enable Places API
+# 4. Enable Geocoding API
+# 5. Enable Directions API
+# 6. Enable Distance Matrix API
+
+# Optional Advanced Features:
+# google_ml_kit: ^0.16.0             # AI/ML features for safety scoring
+# camera: ^0.10.5+5                  # Camera for emergency recording
+# image_picker: ^1.0.4               # Photo capture
+# flutter_background_service: ^5.0.1  # Background location tracking
+# workmanager: ^0.5.1                # Background tasks
