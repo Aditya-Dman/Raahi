@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🛡️ Raahi - Smart Tourist Safety System
+ # 🛡️ Raahi - Smart Tourist Safety System
 
 <img src="assets/sounds/logo.jpg" alt="Raahi Logo" width="150" height="150" style="border-radius: 15px; margin: 20px 0;"/>
 
