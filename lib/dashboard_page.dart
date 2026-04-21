@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'widgets/simple_map_widget.dart';
+import 'widgets/google_map_widget.dart';
 import 'widgets/chatbase_webview.dart';
 import 'widgets/language_selection_widget.dart';
 import 'widgets/localized_text.dart';
@@ -874,9 +874,9 @@ class _DashboardPageState extends State<DashboardPage>
         ),
         // Real Google Map Widget
         Expanded(
-          child: SimpleMapWidget(
-            showSafetyZones: false,
-            showTouristServices: false,
+          child: GoogleMapWidget(
+            showSafetyZones: true,
+            showTouristServices: true,
             showRouteHistory: true,
           ),
         ),

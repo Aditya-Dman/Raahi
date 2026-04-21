@@ -45,29 +45,37 @@ class DashboardDataProvider extends ChangeNotifier {
 
   /// Initialize dashboard data on startup
   Future<void> _initializeData() async {
+    debugPrint('📊 Initializing dashboard data...');
+
+    // Unblock UI quickly and hydrate heavier services in the background.
     try {
-      debugPrint('📊 Initializing dashboard data...');
+      await _loadRemainingDays();
+    } catch (e) {
+      debugPrint('⚠️ Quick dashboard bootstrap failed: $e');
+    }
 
-      // Load initial data
+    _isLoading = false;
+    notifyListeners();
+
+    unawaited(_warmUpDataAndServices());
+  }
+
+  Future<void> _warmUpDataAndServices() async {
+    try {
+      // Load full dashboard metrics without blocking first render.
       await _loadAllData();
+      notifyListeners();
 
-      // Start location monitoring
       await SafetyScoreService.startLocationMonitoring();
 
-      // Initialize AI behavior tracking
-      bool behaviorTrackingStarted = await _behaviorTracker.startTracking();
+      final behaviorTrackingStarted = await _behaviorTracker.startTracking();
       debugPrint(
         '🧠 Behavior tracking ${behaviorTrackingStarted ? 'started' : 'failed to start'}',
       );
 
-      _isLoading = false;
-      notifyListeners();
-
-      debugPrint('✅ Dashboard data initialized successfully');
+      debugPrint('✅ Dashboard background initialization complete');
     } catch (e) {
-      debugPrint('🔴 Error initializing dashboard data: $e');
-      _isLoading = false;
-      notifyListeners();
+      debugPrint('🔴 Error in dashboard background initialization: $e');
     }
   }
 

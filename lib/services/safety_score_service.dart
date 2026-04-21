@@ -67,14 +67,15 @@ class SafetyScoreService {
       if (!serviceEnabled) return null;
 
       LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) return null;
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        return null;
       }
 
-      if (permission == LocationPermission.deniedForever) return null;
-
-      return await Geolocator.getCurrentPosition();
+      return await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.medium,
+        timeLimit: const Duration(seconds: 5),
+      );
     } catch (e) {
       debugPrint('🔴 Error getting location: $e');
       return null;
@@ -414,12 +415,27 @@ class SafetyScoreService {
   /// Start real-time location monitoring for safety tracking
   static Future<void> startLocationMonitoring() async {
     try {
-      // Check permissions first
-      final position = await _getCurrentLocation();
-      if (position == null) {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        debugPrint('🔴 Cannot start monitoring: Location services disabled');
+        return;
+      }
+
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
         debugPrint('🔴 Cannot start monitoring: Location permission denied');
         return;
       }
+
+      final position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.medium,
+        timeLimit: const Duration(seconds: 5),
+      );
 
       // Track initial location
       await trackLocationUpdate(position);
