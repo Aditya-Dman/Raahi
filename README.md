@@ -18,22 +18,30 @@
 ## 📱 App Screenshots
 
 <div align="center">
-  <img src="assets/sounds/LoadingScreen.jpg" alt="Loading Screen" width="200"/>
-  <img src="assets/sounds/MainDashboard.jpg" alt="Main Dashboard" width="200"/>
-  <img src="assets/sounds/SOS Page.jpg" alt="SOS Emergency Page" width="200"/>
-  <img src="assets/sounds/TouristServices.jpg" alt="Tourist Services" width="200"/>
+  <img src="assets/mvp_screenshots/MVP_Screenshot_01.png" alt="Raahi loading screen" width="200"/>
+  <img src="assets/mvp_screenshots/MVP_Screenshot_02.png" alt="Raahi dashboard" width="200"/>
+  <img src="assets/mvp_screenshots/MVP_Screenshot_03.png" alt="Raahi emergency SOS screen" width="200"/>
+  <img src="assets/mvp_screenshots/MVP_Screenshot_04.png" alt="Raahi tourist services" width="200"/>
 </div>
 
 <div align="center">
-  <img src="assets/sounds/DigitalID.jpg" alt="Digital ID" width="200"/>
-  <img src="assets/sounds/KYC.jpg" alt="KYC Update" width="200"/>
-  <img src="assets/sounds/GPS.jpg" alt="GPS Tracking" width="200"/>
-  <img src="assets/sounds/RaahiAIChatBot.jpg" alt="AI ChatBot" width="200"/>
+  <img src="assets/mvp_screenshots/MVP_Screenshot_05.jpeg" alt="Raahi digital tourist ID" width="200"/>
+  <img src="assets/mvp_screenshots/MVP_Screenshot_06.jpeg" alt="Raahi KYC screen" width="200"/>
+  <img src="assets/mvp_screenshots/MVP_Screenshot_07.png" alt="Raahi GPS tracking" width="200"/>
+  <img src="assets/mvp_screenshots/MVP_Screenshot_08.png" alt="Raahi AI assistant" width="200"/>
 </div>
 
 <div align="center">
-  <img src="assets/sounds/IOT.jpg" alt="IoT Integration" width="200"/>
-  <img src="assets/sounds/SOSMessageWork.jpg" alt="SOS Message System" width="200"/>
+  <img src="assets/mvp_screenshots/MVP_Screenshot_09.png" alt="Raahi emergency contacts" width="200"/>
+  <img src="assets/mvp_screenshots/MVP_Screenshot_10.png" alt="Raahi emergency history" width="200"/>
+  <img src="assets/mvp_screenshots/MVP_Screenshot_11.png" alt="Raahi location sharing" width="200"/>
+  <img src="assets/mvp_screenshots/MVP_Screenshot_12.png" alt="Raahi safety settings" width="200"/>
+</div>
+
+<div align="center">
+  <img src="assets/mvp_screenshots/MVP_Screenshot_13.png" alt="Raahi language support" width="200"/>
+  <img src="assets/mvp_screenshots/MVP_Screenshot_14.png" alt="Raahi SOS confirmation" width="200"/>
+  <img src="assets/mvp_screenshots/MVP_Screenshot_15.png" alt="Raahi SOS location message" width="200"/>
 </div>
 
 ## 🌟 Features
