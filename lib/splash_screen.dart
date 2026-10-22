@@ -5,6 +5,7 @@ import 'services/login_persistence.dart';
 import 'services/user_session.dart' as user_session;
 import 'services/supabase_auth_service.dart';
 import 'widgets/localized_text.dart';
+import 'app_theme.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -77,7 +78,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0F0B2F),
+      backgroundColor: AppColors.navyDeep,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -90,7 +91,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 borderRadius: BorderRadius.circular(30),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF6C63FF).withOpacity(0.3),
+                    color: AppColors.tealBright.withValues(alpha: 0.3),
                     blurRadius: 20,
                     offset: const Offset(0, 8),
                   ),
@@ -110,7 +111,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       height: 120,
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
-                          colors: [Color(0xFF6C63FF), Color(0xFF3F3D56)],
+                          colors: [AppColors.teal, AppColors.navy],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
@@ -146,7 +147,7 @@ class _SplashScreenState extends State<SplashScreen> {
               child: CircularProgressIndicator(
                 strokeWidth: 3,
                 valueColor: AlwaysStoppedAnimation<Color>(
-                  Colors.white.withOpacity(0.8),
+                  Colors.white.withValues(alpha: 0.8),
                 ),
               ),
             ),

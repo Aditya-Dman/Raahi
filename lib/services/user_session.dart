@@ -8,26 +8,20 @@ class UserSession {
 
   // Initialize session on app start - check for saved login
   static Future<void> initialize() async {
-    // First try to get user from Supabase session
-    _currentUser = await _authService.getSavedUserSession();
-
-    // If no Supabase session, check for locally saved login data
-    if (_currentUser == null) {
-      final isLoggedIn = await LoginPersistence.isLoggedIn();
-      if (isLoggedIn) {
-        final userData = await LoginPersistence.getSavedUserData();
-        if (userData != null) {
-          // Create a user object from saved data
-          _currentUser = AppUser(
-            id: userData['email'] ?? '', // Use email as ID for simplicity
-            fullName: userData['fullName'] ?? '',
-            email: userData['email'] ?? '',
-            userType: userData['userType'] ?? 'Tourist',
-            nationality: userData['nationality'] ?? '',
-            digitalId: userData['digitalId'] ?? '',
-            createdAt: DateTime.now(),
-          );
-        }
+    // Restore local data first so startup does not depend on internet access.
+    final isLoggedIn = await LoginPersistence.isLoggedIn();
+    if (isLoggedIn) {
+      final userData = await LoginPersistence.getSavedUserData();
+      if (userData != null) {
+        _currentUser = AppUser(
+          id: userData['email'] ?? '',
+          fullName: userData['fullName'] ?? '',
+          email: userData['email'] ?? '',
+          userType: userData['userType'] ?? 'Tourist',
+          nationality: userData['nationality'] ?? '',
+          digitalId: userData['digitalId'] ?? '',
+          createdAt: DateTime.now(),
+        );
       }
     }
   }

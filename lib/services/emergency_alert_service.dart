@@ -1,10 +1,12 @@
 import 'package:geolocator/geolocator.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'dart:async';
+import 'dart:convert';
 import 'supabase_data_service.dart';
 import 'supabase_auth_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EmergencyContact {
   final String name;
@@ -32,6 +34,8 @@ class EmergencyAlert {
   final String message;
   final String userId;
   final bool isActive;
+  final String status;
+  final int contactsNotified;
 
   EmergencyAlert({
     required this.id,
@@ -41,6 +45,8 @@ class EmergencyAlert {
     required this.message,
     required this.userId,
     this.isActive = true,
+    this.status = 'created',
+    this.contactsNotified = 0,
   });
 
   Map<String, dynamic> toJson() {
@@ -53,11 +59,71 @@ class EmergencyAlert {
       'message': message,
       'userId': userId,
       'isActive': isActive,
+      'status': status,
+      'contactsNotified': contactsNotified,
     };
+  }
+
+  EmergencyAlert copyWith({String? status, int? contactsNotified}) {
+    return EmergencyAlert(
+      id: id,
+      timestamp: timestamp,
+      location: location,
+      type: type,
+      message: message,
+      userId: userId,
+      isActive: isActive,
+      status: status ?? this.status,
+      contactsNotified: contactsNotified ?? this.contactsNotified,
+    );
+  }
+
+  factory EmergencyAlert.fromJson(Map<String, dynamic> json) {
+    final typeName = (json['type'] as String? ?? 'AlertType.sos')
+        .split('.')
+        .last;
+    final type = AlertType.values.firstWhere(
+      (value) => value.name == typeName,
+      orElse: () => AlertType.sos,
+    );
+    final latitude = (json['latitude'] as num?)?.toDouble();
+    final longitude = (json['longitude'] as num?)?.toDouble();
+    return EmergencyAlert(
+      id: json['id'] as String? ?? '',
+      timestamp:
+          DateTime.tryParse(json['timestamp'] as String? ?? '') ??
+          DateTime.now(),
+      location: latitude == null || longitude == null
+          ? null
+          : Position(
+              latitude: latitude,
+              longitude: longitude,
+              timestamp: DateTime.now(),
+              accuracy: 0,
+              altitude: 0,
+              altitudeAccuracy: 0,
+              heading: 0,
+              headingAccuracy: 0,
+              speed: 0,
+              speedAccuracy: 0,
+            ),
+      type: type,
+      message: json['message'] as String? ?? '',
+      userId: json['userId'] as String? ?? '',
+      isActive: json['isActive'] as bool? ?? true,
+      status: json['status'] as String? ?? 'created',
+      contactsNotified: (json['contactsNotified'] as num?)?.toInt() ?? 0,
+    );
   }
 }
 
 class EmergencyAlertService {
+  static const MethodChannel _smsChannel = MethodChannel(
+    'com.example.raahi/emergency_sms',
+  );
+  static const MethodChannel _emergencyCallChannel = MethodChannel(
+    'com.example.raahi/emergency_call',
+  );
   static final EmergencyAlertService _instance =
       EmergencyAlertService._internal();
   factory EmergencyAlertService() => _instance;
@@ -102,6 +168,9 @@ class EmergencyAlertService {
 
   // Alert history
   final List<EmergencyAlert> _alertHistory = [];
+  static const _historyKey = 'raahi_emergency_history';
+  static const _queueKey = 'raahi_queued_alerts';
+  static const _contactsKey = 'raahi_cached_emergency_contacts';
 
   // Getters
   List<EmergencyContact> get defaultContacts => _defaultContacts;
@@ -111,6 +180,116 @@ class EmergencyAlertService {
     ..._personalContacts,
   ];
   List<EmergencyAlert> get alertHistory => _alertHistory;
+
+  Future<void> loadAlertHistory() async {
+    final preferences = await SharedPreferences.getInstance();
+    final encoded = preferences.getString(_historyKey);
+    if (encoded == null) return;
+    try {
+      final decoded = jsonDecode(encoded) as List;
+      _alertHistory
+        ..clear()
+        ..addAll(
+          decoded.map(
+            (item) => EmergencyAlert.fromJson(item as Map<String, dynamic>),
+          ),
+        );
+    } catch (_) {
+      await preferences.remove(_historyKey);
+    }
+  }
+
+  Future<void> _persistAlertHistory() async {
+    final preferences = await SharedPreferences.getInstance();
+    await preferences.setString(
+      _historyKey,
+      jsonEncode(_alertHistory.map((alert) => alert.toJson()).toList()),
+    );
+  }
+
+  Future<void> queueAlert(AlertType type, {String additionalInfo = ''}) async {
+    final preferences = await SharedPreferences.getInstance();
+    final queued = preferences.getStringList(_queueKey) ?? [];
+    queued.add(
+      jsonEncode({
+        'type': type.name,
+        'additionalInfo': additionalInfo,
+        'queuedAt': DateTime.now().toIso8601String(),
+      }),
+    );
+    await preferences.setStringList(_queueKey, queued);
+  }
+
+  Future<int> queuedAlertCount() async {
+    final preferences = await SharedPreferences.getInstance();
+    return (preferences.getStringList(_queueKey) ?? []).length;
+  }
+
+  Future<void> flushQueuedAlerts(BuildContext context) async {
+    final preferences = await SharedPreferences.getInstance();
+    final queued = preferences.getStringList(_queueKey) ?? [];
+    if (queued.isEmpty) return;
+    final remaining = <String>[];
+    for (final encoded in queued) {
+      try {
+        final item = jsonDecode(encoded) as Map<String, dynamic>;
+        final type = AlertType.values.firstWhere(
+          (value) => value.name == item['type'],
+          orElse: () => AlertType.sos,
+        );
+        final result = await sendEmergencyAlert(
+          type: type,
+          additionalInfo: item['additionalInfo'] as String? ?? '',
+          context: context,
+        );
+        if (result['success'] != true) remaining.add(encoded);
+      } catch (_) {
+        remaining.add(encoded);
+      }
+    }
+    if (remaining.isEmpty) {
+      await preferences.remove(_queueKey);
+    } else {
+      await preferences.setStringList(_queueKey, remaining);
+    }
+  }
+
+  Future<List<EmergencyContact>> loadCachedPersonalContacts() async {
+    final preferences = await SharedPreferences.getInstance();
+    final encoded = preferences.getStringList(_contactsKey) ?? [];
+    return encoded
+        .map((value) {
+          try {
+            final map = jsonDecode(value) as Map<String, dynamic>;
+            return EmergencyContact(
+              name: map['name'] as String? ?? '',
+              phone: map['phone'] as String? ?? '',
+              relationship: map['relationship'] as String? ?? '',
+              type: ContactType.personalContact,
+            );
+          } catch (_) {
+            return null;
+          }
+        })
+        .whereType<EmergencyContact>()
+        .toList();
+  }
+
+  Future<void> _cachePersonalContacts(List<EmergencyContact> contacts) async {
+    final preferences = await SharedPreferences.getInstance();
+    await preferences.setStringList(
+      _contactsKey,
+      contacts
+          .map(
+            (contact) => jsonEncode({
+              'name': contact.name,
+              'phone': contact.phone,
+              'relationship': contact.relationship,
+            }),
+          )
+          .toList(),
+    );
+  }
 
   // Add personal emergency contact
   void addPersonalContact(EmergencyContact contact) {
@@ -157,6 +336,7 @@ class EmergencyAlertService {
         _personalContacts.add(emergencyContact);
         print('✅ Loaded contact: ${dbContact.name} - ${dbContact.phoneNumber}');
       }
+      await _cachePersonalContacts(_personalContacts);
 
       print('🎯 Total personal contacts loaded: ${_personalContacts.length}');
     } catch (e) {
@@ -240,15 +420,15 @@ class EmergencyAlertService {
   // Make emergency call
   Future<bool> _makeEmergencyCall(String phone) async {
     try {
-      final Uri phoneUri = Uri(scheme: 'tel', path: phone);
-
-      if (await canLaunchUrl(phoneUri)) {
-        await launchUrl(phoneUri);
-        return true;
-      }
-      return false;
+      final permission = await Permission.phone.request();
+      if (!permission.isGranted) return false;
+      final result = await _emergencyCallChannel.invokeMethod<bool>(
+        'callEmergencyNumber',
+        {'phone': phone},
+      );
+      return result ?? false;
     } catch (e) {
-      print('Error making call: $e');
+      print('Error making emergency call: $e');
       return false;
     }
   }
@@ -274,132 +454,15 @@ class EmergencyAlertService {
   // ENHANCED SMS sending - Improved user experience
   Future<bool> _sendSmsAutomatic(String phone, String message) async {
     try {
-      print('🚨 Preparing emergency SMS to $phone');
-
-      // Optimize for immediate SMS app opening with pre-filled message
-      try {
-        final Uri smsUri = Uri(
-          scheme: 'sms',
-          path: phone,
-          queryParameters: {'body': message},
-        );
-
-        print('📱 Opening SMS app with emergency message...');
-        if (await canLaunchUrl(smsUri)) {
-          await launchUrl(
-            smsUri,
-            mode: LaunchMode.externalNonBrowserApplication,
-          );
-          print('✅ SMS app opened - message ready to send to $phone');
-          return true;
-        }
-      } catch (e) {
-        print('❌ SMS URI failed: $e');
-      }
-
-      // Fallback: Basic SMS intent
-      try {
-        final Uri basicSms = Uri.parse('sms:$phone');
-
-        // Copy message to clipboard for easy pasting
-        await Clipboard.setData(ClipboardData(text: message));
-        print('� Emergency message copied to clipboard');
-
-        if (await canLaunchUrl(basicSms)) {
-          await launchUrl(
-            basicSms,
-            mode: LaunchMode.externalNonBrowserApplication,
-          );
-          print('📱 Basic SMS app opened, message in clipboard');
-          return true;
-        }
-      } catch (e) {
-        print('❌ Basic SMS fallback failed: $e');
-      }
-      print('❌ All SMS methods failed for $phone');
-      return false;
+      final result = await _smsChannel.invokeMethod<bool>('sendSms', {
+        'phone': phone,
+        'message': message,
+      });
+      return result ?? false;
     } catch (e) {
-      print('💥 Critical error with SMS sending: $e');
+      print('Direct SMS failed for $phone: $e');
       return false;
     }
-  }
-
-  // Direct SMS Dialog - last resort for user convenience
-  Future<bool> _showDirectSmsDialog(
-    BuildContext context,
-    String phone,
-    String message,
-  ) async {
-    // Create shorter message for display
-    String shortMessage = message.length > 300
-        ? '${message.substring(0, 300)}...'
-        : message;
-
-    return await showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext dialogContext) {
-        return AlertDialog(
-          title: const Text('Send Emergency SMS'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('Unable to send SMS automatically. Please:'),
-                const SizedBox(height: 10),
-                Text(
-                  '1. Send to: $phone',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 5),
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(shortMessage),
-                ),
-                const SizedBox(height: 10),
-                const Text(
-                  '2. The message has been copied to your clipboard for easy pasting',
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              child: const Text('Cancel'),
-              onPressed: () {
-                Navigator.pop(dialogContext, false);
-              },
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                foregroundColor: Colors.white,
-              ),
-              child: const Text('Open SMS App'),
-              onPressed: () async {
-                // Copy to clipboard
-                await Clipboard.setData(ClipboardData(text: message));
-
-                // Try to open SMS app
-                final Uri smsUri = Uri(scheme: 'sms', path: phone);
-                await launchUrl(
-                  smsUri,
-                  mode: LaunchMode.externalNonBrowserApplication,
-                );
-
-                // Close dialog
-                Navigator.pop(dialogContext, true);
-              },
-            ),
-          ],
-        );
-      },
-    ).then((value) => value ?? false);
   }
 
   // Send emergency alert to all contacts - TRUE AUTOMATIC IMPLEMENTATION
@@ -446,6 +509,7 @@ class EmergencyAlertService {
 
       // Add to history
       _alertHistory.insert(0, alert);
+      await _persistAlertHistory();
 
       // Determine which contacts to notify
       List<EmergencyContact> contactsToNotify = allContacts;
@@ -503,9 +567,23 @@ class EmergencyAlertService {
       List<String> successfulContacts = [];
       List<String> failedContacts = [];
       List<String> emergencyServicesReady = [];
+      bool emergencyCallPlaced = false;
+
+      if (includeSms && personalContactsToNotify.isNotEmpty) {
+        final permission = await Permission.sms.request();
+        if (!permission.isGranted) {
+          failedContacts.addAll(
+            personalContactsToNotify.map(
+              (contact) => '${contact.name} (${contact.phone})',
+            ),
+          );
+        }
+      }
 
       // Try to send SMS to personal contacts automatically
-      if (includeSms && personalContactsToNotify.isNotEmpty) {
+      if (includeSms &&
+          personalContactsToNotify.isNotEmpty &&
+          failedContacts.isEmpty) {
         for (EmergencyContact contact in personalContactsToNotify) {
           bool success = await _sendSmsAutomatic(contact.phone, shortMessage);
 
@@ -515,30 +593,6 @@ class EmergencyAlertService {
           } else {
             failedContacts.add('${contact.name} (${contact.phone})');
             print('Failed to send SMS to ${contact.name}');
-
-            // If we have context, show manual dialog for first failed contact
-            if (context != null &&
-                isProgressDialogShowing &&
-                dialogContext != null) {
-              // Remove progress dialog
-              Navigator.pop(dialogContext!);
-              isProgressDialogShowing = false;
-
-              // Show manual SMS dialog
-              bool manualSuccess = await _showDirectSmsDialog(
-                context,
-                contact.phone,
-                shortMessage,
-              );
-
-              if (manualSuccess) {
-                // Move from failed to successful
-                failedContacts.removeLast();
-                successfulContacts.add(
-                  '${contact.name} (${contact.phone}) [Manual]',
-                );
-              }
-            }
           }
 
           // Add small delay between messages
@@ -557,9 +611,15 @@ class EmergencyAlertService {
       if (includeCall) {
         for (EmergencyContact contact in contactsToNotify) {
           if (contact.type == ContactType.police) {
-            await _makeEmergencyCall(contact.phone);
+            emergencyCallPlaced =
+                await _makeEmergencyCall(contact.phone) || emergencyCallPlaced;
           }
         }
+      }
+
+      if (type == AlertType.sos) {
+        emergencyCallPlaced =
+            await _makeEmergencyCall('112') || emergencyCallPlaced;
       }
 
       // Remove progress dialog if still showing
@@ -570,6 +630,17 @@ class EmergencyAlertService {
       // Vibrate device for feedback
       HapticFeedback.vibrate();
 
+      final historyIndex = _alertHistory.indexWhere(
+        (entry) => entry.id == alert.id,
+      );
+      if (historyIndex >= 0) {
+        _alertHistory[historyIndex] = alert.copyWith(
+          status: successfulContacts.isNotEmpty ? 'sent' : 'failed',
+          contactsNotified: successfulContacts.length,
+        );
+        await _persistAlertHistory();
+      }
+
       return {
         'success': successfulContacts.isNotEmpty,
         'alertId': alert.id,
@@ -577,10 +648,19 @@ class EmergencyAlertService {
         'successfulContacts': successfulContacts,
         'failedContacts': failedContacts,
         'emergencyServicesReady': emergencyServicesReady,
+        'emergencyCallPlaced': emergencyCallPlaced,
         'location': currentLocation != null,
         'message': successfulContacts.isNotEmpty
-            ? 'SOS Alert sent to ${successfulContacts.length} contacts!'
-            : 'Could not send SMS. Try calling emergency contacts directly.',
+            ? emergencyCallPlaced
+                  ? 'SOS sent to ${successfulContacts.length} contacts and 112 was called.'
+                  : 'SOS Alert sent to ${successfulContacts.length} contacts!'
+            : failedContacts.isNotEmpty
+            ? emergencyCallPlaced
+                  ? '112 was called, but SMS could not be sent to the saved contacts.'
+                  : 'Could not send SMS to the saved emergency contacts. Check SMS permission, SIM service, and network.'
+            : emergencyCallPlaced
+            ? 'No saved personal emergency contacts were found. 112 was called.'
+            : 'No saved personal emergency contacts were found.',
       };
     } catch (e) {
       print('Error sending emergency alert: $e');
@@ -661,6 +741,9 @@ class EmergencyAlertService {
   // Clear alert history
   void clearAlertHistory() {
     _alertHistory.clear();
+    SharedPreferences.getInstance().then((preferences) {
+      preferences.remove(_historyKey);
+    });
   }
 
   // Get nearest police station (mock implementation)

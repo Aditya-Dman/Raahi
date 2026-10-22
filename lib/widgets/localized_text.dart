@@ -58,7 +58,7 @@ class LocalizedStrings {
     hindiText: 'स्मार्ट पर्यटक सुरक्षा प्रणाली',
     style: TextStyle(
       fontSize: 16,
-      color: Colors.white.withOpacity(0.8),
+      color: Colors.white.withValues(alpha: 0.8),
       letterSpacing: 1,
     ),
   );
@@ -66,7 +66,7 @@ class LocalizedStrings {
   static Widget loading(BuildContext context) => LocalizedText(
     englishText: 'Loading...',
     hindiText: 'लोड हो रहा है...',
-    style: TextStyle(fontSize: 14, color: Colors.white.withOpacity(0.6)),
+    style: TextStyle(fontSize: 14, color: Colors.white.withValues(alpha: 0.6)),
   );
 
   static Widget dashboard(BuildContext context) => LocalizedText(

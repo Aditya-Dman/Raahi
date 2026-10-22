@@ -78,16 +78,26 @@ class SupabaseAuthService {
       );
 
       if (authResponse.user != null) {
-        // Insert user profile data
-        await _supabaseService.insert('user_profiles', {
-          'id': authResponse.user!.id,
-          'full_name': fullName,
-          'email': email,
-          'user_type': userType,
-          'nationality': nationality,
-          'digital_id': digitalId,
-          'created_at': DateTime.now().toIso8601String(),
-        });
+        final existingProfile = await getUserProfile(authResponse.user!.id);
+
+        if (existingProfile == null) {
+          try {
+            await _supabaseService.insert('user_profiles', {
+              'id': authResponse.user!.id,
+              'full_name': fullName,
+              'email': email,
+              'user_type': userType,
+              'nationality': nationality,
+              'digital_id': digitalId,
+              'created_at': DateTime.now().toIso8601String(),
+            });
+          } catch (_) {
+            final createdProfile = await getUserProfile(authResponse.user!.id);
+            if (createdProfile == null) {
+              rethrow;
+            }
+          }
+        }
 
         return {'success': true, 'message': 'Account created successfully!'};
       } else {

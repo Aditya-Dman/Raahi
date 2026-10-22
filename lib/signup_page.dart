@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'login_page.dart';
 import 'services/supabase_auth_service.dart';
+import 'app_theme.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -93,7 +94,7 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
+      backgroundColor: AppColors.canvas,
       body: Center(
         child: SingleChildScrollView(
           padding: EdgeInsets.all(
@@ -113,7 +114,7 @@ class _SignUpPageState extends State<SignUpPage> {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
+                  color: Colors.grey.withValues(alpha: 0.1),
                   blurRadius: 20,
                   offset: const Offset(0, 10),
                 ),
@@ -142,7 +143,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF3B82F6),
+                      color: AppColors.teal,
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: const Icon(
@@ -454,7 +455,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     child: ElevatedButton(
                       onPressed: _signUp,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF3B82F6),
+                        backgroundColor: AppColors.teal,
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
@@ -497,7 +498,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           'Sign In',
                           style: TextStyle(
                             fontSize: 14,
-                            color: Color(0xFF3B82F6),
+                            color: AppColors.teal,
                             fontWeight: FontWeight.w600,
                           ),
                         ),

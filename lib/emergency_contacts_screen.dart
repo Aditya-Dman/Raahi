@@ -3,6 +3,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'models/emergency_contact.dart';
 import 'services/supabase_data_service.dart';
 import 'services/supabase_auth_service.dart';
+import 'app_theme.dart';
+import 'services/emergency_alert_service.dart' as alert_service;
 
 class EmergencyContactsScreen extends StatefulWidget {
   const EmergencyContactsScreen({super.key});
@@ -18,11 +20,10 @@ class _EmergencyContactsScreenState extends State<EmergencyContactsScreen> {
   List<EmergencyContact> contacts = [];
   bool isLoading = true;
 
-  // Beige color theme
-  static const Color primaryBeige = Color(0xFFD2B48C);
-  static const Color secondaryBeige = Color(0xFFC19A6B);
-  static const Color lightBeige = Color(0xFFF5F5DC);
-  static const Color darkBeige = Color(0xFF8B7355);
+  static const Color primaryBeige = AppColors.teal;
+  static const Color secondaryBeige = AppColors.sky;
+  static const Color lightBeige = AppColors.canvas;
+  static const Color darkBeige = AppColors.ink;
 
   @override
   void initState() {
@@ -36,9 +37,27 @@ class _EmergencyContactsScreenState extends State<EmergencyContactsScreen> {
     // Get current user from Supabase auth
     final currentUser = await _authService.getCurrentUser();
     if (currentUser != null) {
-      final userContacts = await _dataService.getEmergencyContacts(
+      var userContacts = await _dataService.getEmergencyContacts(
         currentUser.id.toString(),
       );
+      if (userContacts.isEmpty) {
+        final cached = await alert_service.EmergencyAlertService()
+            .loadCachedPersonalContacts();
+        if (cached.isNotEmpty) {
+          userContacts = cached
+              .map(
+                (contact) => EmergencyContact(
+                  userId: currentUser.id.toString(),
+                  name: contact.name,
+                  phoneNumber: contact.phone,
+                  relationship: contact.relationship,
+                  createdAt: DateTime.now(),
+                  updatedAt: DateTime.now(),
+                ),
+              )
+              .toList();
+        }
+      }
       setState(() {
         contacts = userContacts;
         isLoading = false;
@@ -367,11 +386,10 @@ class _AddEditContactDialogState extends State<AddEditContactDialog> {
   String _selectedRelationship = 'Family';
   bool _isPrimary = false;
 
-  // Beige color theme
-  static const Color primaryBeige = Color(0xFFD2B48C);
-  static const Color secondaryBeige = Color(0xFFC19A6B);
-  static const Color lightBeige = Color(0xFFF5F5DC);
-  static const Color darkBeige = Color(0xFF8B7355);
+  static const Color primaryBeige = AppColors.teal;
+  static const Color secondaryBeige = AppColors.sky;
+  static const Color lightBeige = Colors.white;
+  static const Color darkBeige = AppColors.ink;
 
   final List<String> relationships = [
     'Family',

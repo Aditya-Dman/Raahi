@@ -650,7 +650,7 @@ class _KYCUpdateScreenState extends State<KYCUpdateScreen> {
                   height: 80,
                   width: 80,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFD2B48C).withOpacity(0.1),
+                    color: const Color(0xFFD2B48C).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(40),
                   ),
                   child: const Icon(

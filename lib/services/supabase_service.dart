@@ -1,5 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'supabase_config.dart';
+import 'dart:async';
 
 class SupabaseService {
   static final SupabaseService _instance = SupabaseService._internal();
@@ -15,8 +16,16 @@ class SupabaseService {
       anonKey: SupabaseConfig.supabaseAnonKey,
     );
 
-    // Create required tables if they don't exist
-    await _createRequiredTables();
+    // Table checks must not prevent the app from opening offline.
+    unawaited(_initializeTablesInBackground());
+  }
+
+  static Future<void> _initializeTablesInBackground() async {
+    try {
+      await _createRequiredTables().timeout(const Duration(seconds: 5));
+    } catch (error) {
+      print('Supabase table setup deferred: $error');
+    }
   }
 
   // Create required tables in Supabase

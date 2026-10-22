@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'login_page.dart';
 import 'signup_page.dart';
 import 'splash_screen.dart';
 import 'services/supabase_service.dart';
 import 'services/user_session.dart' as user_session;
-import 'services/supabase_debug.dart';
 import 'services/language_service.dart';
-import 'services/dashboard_data_provider.dart';
 import 'widgets/localized_text.dart';
+import 'app_theme.dart';
+import 'l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,27 +38,15 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => LanguageNotifier()..loadSavedLanguage(),
         ),
-        ChangeNotifierProvider(create: (context) => DashboardDataProvider()),
       ],
       child: Consumer<LanguageNotifier>(
         builder: (context, languageNotifier, child) {
           return MaterialApp(
             title: 'Raahi - Smart Tourist Safety System',
-            theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(
-                seedColor: const Color(0xFF6C63FF),
-              ),
-              useMaterial3: true,
-              fontFamily: 'Roboto',
-            ),
+            theme: buildRaahiTheme(),
             locale: languageNotifier.currentLocale,
-            localizationsDelegates: const [
-              // AppLocalizations.delegate, // Will be generated
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: const [Locale('en', 'US'), Locale('hi', 'IN')],
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
             home: const SplashScreen(),
             debugShowCheckedModeBanner: false,
             showPerformanceOverlay: false,
@@ -177,29 +164,6 @@ class HomePage extends StatelessWidget {
                               ),
                               child: const Text(
                                 'Login',
-                                style: TextStyle(fontSize: 16),
-                              ),
-                            ),
-                            // Debug button for Supabase
-                            TextButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        const SupabaseDebugScreen(),
-                                  ),
-                                );
-                              },
-                              style: TextButton.styleFrom(
-                                foregroundColor: Colors.amber,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                  vertical: 8,
-                                ),
-                              ),
-                              child: const Text(
-                                'Debug DB',
                                 style: TextStyle(fontSize: 16),
                               ),
                             ),
@@ -378,7 +342,9 @@ class HomePage extends StatelessWidget {
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0xFF6C63FF).withOpacity(0.3),
+                                color: const Color(
+                                  0xFF6C63FF,
+                                ).withValues(alpha: 0.3),
                                 blurRadius: 20,
                                 spreadRadius: 5,
                               ),
@@ -471,7 +437,7 @@ class HomePage extends StatelessWidget {
                                 BoxShadow(
                                   color: const Color(
                                     0xFF6C63FF,
-                                  ).withOpacity(0.3),
+                                  ).withValues(alpha: 0.3),
                                   blurRadius: 20,
                                   spreadRadius: 5,
                                 ),
@@ -658,7 +624,7 @@ class _ModernNavLink extends StatelessWidget {
         onPressed: () {},
         style: TextButton.styleFrom(
           foregroundColor: Colors.white70,
-          overlayColor: Colors.white.withOpacity(0.1),
+          overlayColor: Colors.white.withValues(alpha: 0.1),
         ),
         child: Text(
           label,
@@ -693,10 +659,10 @@ class _ModernChallengeCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withOpacity(0.3), width: 2),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 2),
         boxShadow: [
           BoxShadow(
-            color: color.withOpacity(0.1),
+            color: color.withValues(alpha: 0.1),
             blurRadius: 20,
             spreadRadius: 5,
             offset: const Offset(0, 10),
@@ -709,7 +675,7 @@ class _ModernChallengeCard extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(isDesktop ? 16 : 12),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
+              color: color.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Icon(icon, color: color, size: isDesktop ? 32 : 28),

@@ -20,10 +20,10 @@ class LanguageService {
   static Locale getLocaleFromLanguageCode(String languageCode) {
     switch (languageCode) {
       case 'hi':
-        return const Locale('hi', 'IN');
+        return const Locale('hi');
       case 'en':
       default:
-        return const Locale('en', 'US');
+        return const Locale('en');
     }
   }
 
@@ -38,7 +38,7 @@ class LanguageService {
 
 // Language notifier for state management
 class LanguageNotifier extends ChangeNotifier {
-  Locale _currentLocale = const Locale('en', 'US');
+  Locale _currentLocale = const Locale('en');
 
   Locale get currentLocale => _currentLocale;
 

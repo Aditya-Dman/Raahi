@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/language_service.dart';
+import '../app_theme.dart';
 
 class LanguageSelectionDialog extends StatelessWidget {
   const LanguageSelectionDialog({super.key});
@@ -10,7 +11,7 @@ class LanguageSelectionDialog extends StatelessWidget {
     return AlertDialog(
       title: const Row(
         children: [
-          Icon(Icons.language, color: Color(0xFF6C63FF)),
+          Icon(Icons.language, color: AppColors.teal),
           SizedBox(width: 8),
           Expanded(
             child: Text('Select Language', style: TextStyle(fontSize: 16)),
@@ -22,11 +23,11 @@ class LanguageSelectionDialog extends StatelessWidget {
         children: LanguageService.getAvailableLanguages().map((language) {
           return ListTile(
             leading: CircleAvatar(
-              backgroundColor: const Color(0xFF6C63FF).withOpacity(0.1),
+              backgroundColor: AppColors.teal.withValues(alpha: 0.1),
               child: Text(
                 language['code']!.toUpperCase(),
                 style: const TextStyle(
-                  color: Color(0xFF6C63FF),
+                  color: AppColors.teal,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -36,10 +37,11 @@ class LanguageSelectionDialog extends StatelessWidget {
               style: const TextStyle(fontWeight: FontWeight.w500),
             ),
             subtitle: Text(language['name']!),
-            onTap: () {
-              context.read<LanguageNotifier>().changeLanguage(
+            onTap: () async {
+              await context.read<LanguageNotifier>().changeLanguage(
                 language['code']!,
               );
+              if (!context.mounted) return;
               Navigator.of(context).pop();
 
               // Show confirmation snackbar
@@ -50,7 +52,7 @@ class LanguageSelectionDialog extends StatelessWidget {
                         ? 'भाषा हिंदी में बदल दी गई'
                         : 'Language changed to English',
                   ),
-                  backgroundColor: const Color(0xFF6C63FF),
+                  backgroundColor: AppColors.teal,
                   duration: const Duration(seconds: 2),
                 ),
               );
@@ -61,10 +63,7 @@ class LanguageSelectionDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text(
-            'Cancel',
-            style: TextStyle(color: Color(0xFF6C63FF)),
-          ),
+          child: const Text('Cancel', style: TextStyle(color: AppColors.teal)),
         ),
       ],
     );
@@ -102,12 +101,12 @@ class LanguageSelectionButton extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF6C63FF).withOpacity(0.1),
+                      color: AppColors.teal.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: const Icon(
                       Icons.language,
-                      color: Color(0xFF6C63FF),
+                      color: AppColors.teal,
                       size: 24,
                     ),
                   ),
@@ -121,7 +120,7 @@ class LanguageSelectionButton extends StatelessWidget {
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFF2D3748),
+                            color: AppColors.ink,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -138,7 +137,7 @@ class LanguageSelectionButton extends StatelessWidget {
                   const Icon(
                     Icons.arrow_forward_ios,
                     size: 16,
-                    color: Color(0xFF6C63FF),
+                    color: AppColors.teal,
                   ),
                 ],
               ),

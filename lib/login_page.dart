@@ -4,6 +4,7 @@ import 'signup_page.dart';
 import 'services/supabase_auth_service.dart';
 import 'services/user_session.dart' as user_session;
 import 'services/login_persistence.dart';
+import 'app_theme.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -47,9 +48,10 @@ class _LoginPageState extends State<LoginPage> {
             digitalId: user.digitalId,
           );
 
-          Navigator.pushReplacement(
+          Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => const DashboardPage()),
+            (route) => false,
           );
         } else {
           _showError(result['message'] ?? 'Login failed');
@@ -69,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
+      backgroundColor: AppColors.canvas,
       body: Center(
         child: SingleChildScrollView(
           padding: EdgeInsets.all(
@@ -89,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
+                  color: Colors.grey.withValues(alpha: 0.1),
                   blurRadius: 20,
                   offset: const Offset(0, 10),
                 ),
@@ -118,7 +120,7 @@ class _LoginPageState extends State<LoginPage> {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF3B82F6),
+                      color: AppColors.teal,
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: const Icon(
@@ -279,7 +281,7 @@ class _LoginPageState extends State<LoginPage> {
                             'Forgot password?',
                             style: TextStyle(
                               fontSize: 13,
-                              color: Color(0xFF3B82F6),
+                              color: AppColors.teal,
                             ),
                             textAlign: TextAlign.end,
                           ),
@@ -296,7 +298,7 @@ class _LoginPageState extends State<LoginPage> {
                     child: ElevatedButton(
                       onPressed: _signIn,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF3B82F6),
+                        backgroundColor: AppColors.teal,
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
@@ -339,7 +341,7 @@ class _LoginPageState extends State<LoginPage> {
                           'Sign Up',
                           style: TextStyle(
                             fontSize: 14,
-                            color: Color(0xFF3B82F6),
+                            color: AppColors.teal,
                             fontWeight: FontWeight.w600,
                           ),
                         ),

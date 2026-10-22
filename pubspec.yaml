@@ -38,20 +38,20 @@ dependencies:
   cupertino_icons: ^1.0.8
   intl: ^0.20.2
   provider: ^6.1.1
-  sqflite: ^2.3.0
-  path: ^1.8.3
   crypto: ^3.0.3
   supabase_flutter: ^2.5.6
   shared_preferences: ^2.5.3
   url_launcher: ^6.2.4
   permission_handler: ^11.3.0
-  google_maps_flutter: ^2.5.0
-  location: ^5.0.3
   geolocator: ^10.1.0
-  audioplayers: ^6.5.1
-  http: ^1.1.0
   webview_flutter: ^4.13.0
   image_picker: ^1.0.4
+  flutter_map: ^8.3.2
+  latlong2: ^0.10.1
+  flutter_markdown: ^0.7.7+1
+  speech_to_text: ^7.5.0
+  connectivity_plus: ^7.3.2
+  sensors_plus: ^6.1.1
 
 dev_dependencies:
   flutter_test:
