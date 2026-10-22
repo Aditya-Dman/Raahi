@@ -1,21 +1,62 @@
 <div align="center">
 
- # 🛡️ Raahi - Smart Tourist Safety System
+# 🛡️ Raahi
 
-<img src="assets/sounds/logo.jpg" alt="Raahi Logo" width="150" height="150" style="border-radius: 15px; margin: 20px 0;"/>
+### Smart Tourist Safety System
 
-*Your intelligent travel companion for safe and secure tourism*
+<img src="assets/sounds/logo.jpg" alt="Raahi logo" width="140" height="140"/>
 
-**🏆 Developed for Smart India Hackathon (SIH) 2025 Problem Statement**
+**A practical Android app that brings travel assistance, location awareness, and emergency response tools into one place.**
 
-[![Flutter](https://img.shields.io/badge/Flutter-3.8.1+-02569B?style=flat&logo=flutter)](https://flutter.dev)
-[![Platform](https://img.shields.io/badge/Platform-Android-blue)](#)
-[![SIH](https://img.shields.io/badge/SIH-2025-orange?style=flat)](https://sih.gov.in)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](#)
+[![Flutter](https://img.shields.io/badge/Flutter-3.8%2B-02569B?style=flat&logo=flutter)](https://flutter.dev)
+[![Platform](https://img.shields.io/badge/Platform-Android-3DDC84?style=flat&logo=android)](https://www.android.com/)
+[![Backend](https://img.shields.io/badge/Backend-Supabase-3ECF8E?style=flat&logo=supabase)](https://supabase.com)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 </div>
 
-## 📱 App Screenshots
+## About Raahi
+
+Raahi is a mobile safety companion for tourists and travellers. It helps users keep important travel and identity information together, monitor their location, contact trusted people during an emergency, and get travel or safety guidance from an AI assistant.
+
+The app is designed around a local-first approach. Core screens, saved contacts, emergency history, and cached information remain available when the internet is unavailable. Features that require a cloud service, such as account authentication, cloud synchronisation, and AI responses, become available again when connectivity returns.
+
+## What Raahi can do
+
+### 🚨 Emergency response
+
+- Send an SOS alert from the dashboard.
+- Trigger an SOS confirmation prompt by shaking the phone while using the dashboard.
+- Send a location-based SMS directly to every saved personal emergency contact.
+- Attempt to call India's emergency number, **112**, after an SOS request.
+- Provide separate medical, security, and location-sharing alert flows.
+- Store emergency activity in local history for later reference.
+
+> Emergency SMS and calling depend on the device, SIM, carrier, permissions, and network availability. A successful request from the app does not guarantee that a message was delivered or that an emergency call was answered.
+
+### 📍 Location and travel awareness
+
+- Track the user's route using the device GPS.
+- Display the route on an OpenStreetMap-based map.
+- Save route points and the last known location locally.
+- Share a Google Maps location link in emergency messages.
+- Discover useful nearby travel, medical, food, and transport services where configured.
+
+### 🪪 Digital tourist profile
+
+- Maintain a tourist profile with basic identity and travel information.
+- View a digital tourist ID.
+- Manage emergency contacts.
+- Support English and Hindi on the main dashboard, navigation labels, and important safety actions.
+
+### 🤖 Raahi AI assistant
+
+- Ask travel, safety, and destination-related questions.
+- Use text, voice input, and image-based assistance where supported.
+- Receive safety-oriented responses through a protected Supabase Edge Function.
+- Keep the provider API key on the server instead of inside the mobile application.
+
+## Screenshots
 
 <div align="center">
   <img src="assets/mvp_screenshots/MVP_Screenshot_01.png" alt="Raahi loading screen" width="200"/>
@@ -34,7 +75,7 @@
 <div align="center">
   <img src="assets/mvp_screenshots/MVP_Screenshot_09.png" alt="Raahi emergency contacts" width="200"/>
   <img src="assets/mvp_screenshots/MVP_Screenshot_10.png" alt="Raahi emergency history" width="200"/>
-  <img src="assets/mvp_screenshots/MVP_Screenshot_11.png" alt="Raahi location sharing" width="200"/>
+  <img src="assets/mvp_screenshots/MVP_Screenshot_11.png" alt="Raahi location-sharing message" width="200"/>
   <img src="assets/mvp_screenshots/MVP_Screenshot_12.png" alt="Raahi safety settings" width="200"/>
 </div>
 
@@ -44,180 +85,115 @@
   <img src="assets/mvp_screenshots/MVP_Screenshot_15.png" alt="Raahi SOS location message" width="200"/>
 </div>
 
-## 🌟 Features
+## How it works
 
-### 🔐 **Authentication & Security**
-- Secure user authentication with Supabase
-- Digital ID management and KYC updates
-- Blockchain-based security features
-- Two-language support (English/Hindi)
+1. The user signs in and completes a basic tourist profile.
+2. Emergency contacts and travel information are saved locally and synchronised with Supabase when possible.
+3. The dashboard provides quick access to GPS tracking, emergency actions, the digital ID, services, and the AI assistant.
+4. During an SOS event, Raahi gets the best available location, sends an individual alert to each saved contact, and attempts the 112 emergency call.
+5. If cloud connectivity is unavailable, local safety data and queued actions remain available for later synchronisation.
 
-### 🗺️ **Location & Navigation**
-- Real-time GPS tracking and location services
-- Google Maps integration with live directions
-- Nearby places discovery (Restaurants, Hotels, Medical, Transport)
-- Geofencing with custom safety zones
-- Smart location-based alerts
+## Technology
 
-### 🚨 **Emergency Features**
-- 3sec Hold emergency alert system
-- Emergency contacts management
-- Real-time health monitoring
-- AI-powered anomaly detection
-- Automatic safety score calculation
+| Area | Technology |
+| --- | --- |
+| Mobile application | Flutter and Dart |
+| State and UI updates | Provider and Flutter widgets |
+| Authentication and database | Supabase Auth and PostgreSQL |
+| Server-side AI gateway | Supabase Edge Function |
+| AI provider | Groq text and vision models |
+| Maps and route display | `flutter_map`, OpenStreetMap tiles, `latlong2` |
+| GPS | `geolocator` |
+| Offline persistence | SharedPreferences and local cached data |
+| Emergency SMS | Android `SmsManager` through a Flutter platform channel |
+| Emergency calling | Android `TelecomManager` through a Flutter platform channel |
+| Device features | Camera, microphone, speech input, and accelerometer |
 
-### 🏨 **Travel Assistance**
-- Google Places API integration for real business data
-- Live ratings, photos, and business information
-- Multi-app navigation support
-- Price level indicators and opening hours
+## Project structure
 
-### 🤖 **AI-Powered Features**
-- Intelligent chatbot integration (Raahi)
-- Behavior tracking and analysis
-- Predictive safety alerts
-- Smart recommendations
+```text
+lib/
+├── main.dart
+├── dashboard_page.dart
+├── rahi_chat_screen.dart
+├── emergency_history_screen.dart
+├── privacy_security_screen.dart
+├── services/
+│   ├── emergency_alert_service.dart
+│   ├── rahi_ai_service.dart
+│   ├── supabase_auth_service.dart
+│   ├── supabase_data_service.dart
+│   ├── supabase_service.dart
+│   └── user_session.dart
+├── widgets/
+│   └── simple_map_widget.dart
+└── l10n/
 
-## 🛠️ Tech Stack
+android/app/src/main/
+├── AndroidManifest.xml
+└── kotlin/com/example/raahi/MainActivity.kt
 
-- **Frontend**: Flutter 3.8.1+
-- **Backend**: Supabase (PostgreSQL, Authentication, Real-time)
-- **Maps**: Google Maps API, Google Places API
-- **Location**: Geolocator, Location Services
-- **State Management**: Provider
-- **Image Handling**: Image Picker
-- **Web Integration**: WebView Flutter
-- **Local Storage**: Shared Preferences, SQLite
+supabase/functions/rahi-chat/
+└── index.ts
+```
 
-## 📋 Prerequisites
+## Getting started
 
-- Flutter SDK 3.8.1 or higher
-- Dart SDK
-- Android Studio / VS Code
-- Google Maps API Key
-- Google Places API Key
-- Supabase Project Setup
+### Requirements
 
-## 🚀 Getting Started
+- Flutter SDK 3.8 or later
+- Dart SDK compatible with the installed Flutter version
+- Android Studio or VS Code
+- Android SDK and a physical Android device or emulator
+- A Supabase project for authentication, database features, and the AI Edge Function
 
-### 1. Clone the Repository
+### Installation
+
 ```bash
 git clone https://github.com/Aditya-Dman/Raahi.git
 cd Raahi
-```
-
-### 2. Install Dependencies
-```bash
 flutter pub get
-```
-
-### 3. API Configuration
-
-#### Google Maps & Places API Setup
-1. Go to [Google Cloud Console](https://console.cloud.google.com/)
-2. Create a new project or select existing one
-3. Enable **Maps SDK for Android** and **Places API**
-4. Create an API key with proper restrictions
-5. Update `android/app/src/main/AndroidManifest.xml`:
-   ```xml
-   <meta-data android:name="com.google.android.geo.API_KEY"
-              android:value="YOUR_ACTUAL_API_KEY_HERE"/>
-   ```
-6. Set environment variable or update `lib/config/api_config.dart`
-
-#### Supabase Setup
-1. Create a project at [Supabase](https://supabase.com)
-2. Update `lib/services/supabase_config.dart` with your project details
-
-**⚠️ Security Note:** Never commit API keys to public repositories!
-
-### 4. Database Setup
-Run the SQL scripts in the Supabase SQL editor:
-- `supabase_emergency_contacts_table.sql`
-- `create_table_function.sql`
-- `docs/digital_ids_table.sql`
-
-### 5. Run the App
-```bash
 flutter run
 ```
 
-## 📁 Project Structure
+### Supabase and AI configuration
 
-```
-lib/
-├── main.dart                     # App entry point
-├── splash_screen.dart           # Loading screen
-├── login_page.dart              # Authentication
-├── signup_page.dart             # User registration
-├── dashboard_page.dart          # Main dashboard
-├── digital_id_screen.dart       # Digital ID management
-├── emergency_contacts_screen.dart # Emergency contacts
-├── places_list_screen.dart      # Nearby places
-├── geofencing_settings_screen.dart # Location settings
-├── kyc_update_screen.dart       # KYC updates
-├── models/                      # Data models
-│   └── emergency_contact.dart
-├── services/                    # Business logic
-│   ├── supabase_*.dart         # Database services
-│   ├── emergency_alert_service.dart
-│   ├── places_service.dart
-│   ├── ai_*.dart               # AI features
-│   └── ...
-├── widgets/                     # Reusable components
-└── l10n/                       # Localization files
+1. Create a Supabase project.
+2. Configure the project values using the app's Supabase configuration pattern.
+3. Apply the relevant SQL files from [`migration/`](migration/).
+4. Configure the `GROQ_API_KEY` secret for the `rahi-chat` Edge Function.
+5. Deploy the Edge Function before using AI features.
+
+Never commit real API keys, service-role keys, or private credentials to the repository. Cloud features may be unavailable until the project is configured, but the application should still be able to start and show locally cached data for a previously logged-in user.
+
+## Testing and validation
+
+Run the Flutter test suite with:
+
+```bash
+flutter test
 ```
 
-## 🔧 Configuration Files
+Build a debug Android APK with:
 
-- `SUPABASE_SETUP.md` - Database setup guide
-- `PLACES_INTEGRATION_GUIDE.md` - Google Places API guide  
-- `CHATBASE_INTEGRATION.md` - AI chatbot setup
-- `REAL_DATA_SETUP.md` - Real data configuration
+```bash
+flutter build apk --debug
+```
 
-## 🌍 Supported Platform
+For real-device validation, test GPS permissions, SMS permissions, multiple emergency contacts, shake detection, offline startup, and emergency-call behaviour carefully. Do not place an unnecessary test call to 112.
 
-- ✅ Android
+## Current scope
 
-## 📱 Key Screens
+Raahi is an Android-focused MVP. Availability of emergency communication depends on Android permissions and device/carrier support. The app provides route tracking and location visualisation; it is not a turn-by-turn navigation system. Cloud synchronisation and AI assistance require internet access.
 
-1. **Splash Screen** - App loading with branding
-2. **Authentication** - Login/Signup with Supabase
-3. **Dashboard** - Main hub with all features
-4. **Emergency Contacts** - Manage emergency contacts
-5. **Nearby Places** - Discover local businesses
-6. **Digital ID** - Identity management
-7. **Geofencing** - Location-based safety zones
+## Contributing
 
-## 🔒 Security Features
+Issues and improvements are welcome. Please keep changes focused, avoid committing secrets or generated build output, and run the relevant Flutter tests before opening a pull request.
 
-- End-to-end encrypted communications
-- Secure authentication with Supabase
-- Local data encryption
-- Privacy-focused location tracking
-- Blockchain integration for enhanced security
+## License
 
-## 🏆 About SIH 2025
-
-This project was developed as a solution for **Smart India Hackathon 2025**, addressing the critical need for tourist safety and security in India. The app provides comprehensive safety features for tourists, including emergency alerts, real-time tracking, and AI-powered assistance to ensure safe and secure tourism experiences.
-
-## 👨‍💻 Developer
-
-**Aditya Dman**
-- GitHub: [@Aditya-Dman](https://github.com/Aditya-Dman)
-
-## 🙏 Acknowledgments
-
-- Smart India Hackathon 2025 for the opportunity
-- Flutter team for the amazing framework
-- Supabase for backend infrastructure
-- Google for Maps and Places APIs
-
-
-If you found this project helpful, please give it a ⭐️!
-
----
+This project is available under the [MIT License](LICENSE).
 
 <div align="center">
-  <strong>Built with ❤️ using Flutter for SIH 2025</strong>
+  <strong>Built with Flutter for safer, more informed travel.</strong>
 </div>
